@@ -25,16 +25,34 @@ describe MdData do
 
   it 'should create pull out item based on rules and attributes' do
     class TestClass
-      table_data { [ ["year == 1994", "8t"] ] }
+      table_data { [ ["8t" , "year == 1994"] ] }
     end
     TestClass.select(:year => 1994).should == "8t"
   end
 
   it 'item can be anythinig' do
     class TestClass
-      table_data { [ ["year == 1994", TestClass.new ] ] }
+      table_data { [ [TestClass.new , "year == 1994" ] ] }
     end
     TestClass.select(:year => 1994).class.should == TestClass
+  end
+
+  it 'rules can be created with add' do
+    class TestClass
+      table_data { add "8t", "year == 1994" }
+    end
+    TestClass.select(:year => 1994).should == "8t"
+  end
+
+  it 'multiple rules can be created with add' do
+    class TestClass
+      table_data do
+        add "8t", "year == 1994" 
+        add "9t", "year == 1995"
+      end
+    end
+    TestClass.select(:year => 1994).should == "8t"
+    TestClass.select(:year => 1995).should == "9t"
   end
 
 end
