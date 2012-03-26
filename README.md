@@ -19,10 +19,10 @@ For example:
       6t
 ```
 
-This can be written down as
+This can be written down as:
 ```
 class MaterialConsumption
-  extend MdData
+  include MdData
 
    table_data do
      context "year == 1994, city == :buenos_aires" do
