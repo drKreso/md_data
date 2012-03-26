@@ -23,20 +23,6 @@ describe MdData do
     TestClass.send(:load_rules).should == "ALIGATOR"
   end
 
-  it 'should create pull out item based on rules and attributes' do
-    class TestClass
-      table_data { [ ["8t" , "year == 1994"] ] }
-    end
-    TestClass.select(:year => 1994).should == "8t"
-  end
-
-  it 'item can be anythinig' do
-    class TestClass
-      table_data { [ [TestClass.new , "year == 1994" ] ] }
-    end
-    TestClass.select(:year => 1994).class.should == TestClass
-  end
-
   it 'rules can be created with add' do
     class TestClass
       table_data { add "8t", "year == 1994" }
@@ -53,6 +39,32 @@ describe MdData do
     end
     TestClass.select(:year => 1994).should == "8t"
     TestClass.select(:year => 1995).should == "9t"
+  end
+
+  it 'should create pull out item based on rules and attributes' do
+    class TestClass
+      table_data { add "8t" , "year == 1994" }
+    end
+    TestClass.select(:year => 1994).should == "8t"
+  end
+
+  it 'item can be anythinig' do
+    class TestClass
+      table_data { add TestClass.new , "year == 1994" }
+    end
+    TestClass.select(:year => 1994).class.should == TestClass
+  end
+
+
+  it 'rules can be created with add in context' do
+    class TestClass
+      table_data do
+        context "time_of_day == :morning" do
+          add "8t", "year == 1994" 
+        end
+      end
+    end
+    TestClass.select(:year => 1994, :time_of_day => :morning).should == "8t"
   end
 
 end

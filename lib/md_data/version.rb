@@ -1,3 +1,3 @@
-module MtData
+module MdData
   VERSION = "1.0.0"
 end

@@ -9,8 +9,11 @@ module MdData
     end
 
     def select(attributes)
-      rules = load_rules
-      prepared = prepare(rules, attributes)
+      @rules = []
+      @current_context = nil
+      load_rules
+      prepared = prepare(@rules, attributes)
+      pp prepared
       prepared.select { |rule| eval(rule[1]) }.map { |evaluated| evaluated[0] }[0]
     end
 
@@ -29,7 +32,14 @@ module MdData
     end
 
     def add(value, condition)
-      [ ["8t" , "year == 1994"], ["9t" , "year == 1995"] ] 
+      context_condition = @current_context.nil? ? '' : " && #{@current_context} "
+      @rules << ( [value , (condition + context_condition)] )
     end
+
+    def context(condition, &block)
+      @current_context = condition
+      block.call
+    end
+    
   end
 end
