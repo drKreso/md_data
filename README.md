@@ -41,7 +41,7 @@ class MaterialConsumption
   end
 end
 
-MaterialConsumption.select(:year => 1994, :city => :buenos_aires, :material => :coal) #=> '8t'
+MaterialConsumption.select(:year => :year_1994, :city => :buenos_aires, :material => :coal) #=> '8t'
 ```
 ##Usage
 By defining dimensions you get helper methods that can be used in 'context' and 'add' conditionals.
