@@ -74,7 +74,7 @@ module MdData
             break
           end
         end
-        result
+        result.nil? ? raise('No rule is found') : result
       end
     end
 
