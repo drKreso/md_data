@@ -67,23 +67,32 @@ describe MdData do
     TestClass.select(:year => 1994, :time_of_day => :morning).should == "8t"
   end
 
+  it 'rules can be created to comapre with string' do
+    class TestClass
+      table_data do
+        context "time_of_day == 'morning'" do
+          add "8t", "year == 1995" 
+          add "6t", "year == 1994" 
+        end
+      end
+    end
+    TestClass.select(:year => 1994, :time_of_day => 'morning').should == "6t"
+  end
+
+  it 'can have multiple contexts' do
+    class TestClass
+      table_data do
+        context "time_of_day == :morning" do
+          add "18t", "year == 1995" 
+          add "16t", "year == 1994" 
+        end
+        context "time_of_day == :evening" do
+          add "8t", "year == 1995" 
+        end
+      end
+    end
+    TestClass.select(:year => 1995, :time_of_day => :morning).should == "18t"
+    TestClass.select(:year => 1995, :time_of_day => :evening).should == "8t"
+  end
+
 end
-
-
-# class MaterialConsumption
-#   include MdData
-# 
-#    table_data do
-#      context "year == 1994, city == :buenos_aires" do
-#        add "8t", "meterial == :coal"
-#        add "5t", "meterial == :potassium"
-#      end
-# 
-#      context "year == 1995, city == :buenos_aires" do
-#        add "8t", "meterial == :coal"
-#        add "5t", "meterial == :potassium"
-#      end
-#    end
-# end
-# 
-# MaterialConsumption.select(:year => 1994, :city => :buenos_aires, :material => :coal) #=> '8t'

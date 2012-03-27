@@ -1,6 +1,6 @@
 #md_data
 
-This is easy notation for describing multidimensional data.
+An easy notation for describing multidimensional data.
 
 For example:
 
@@ -19,18 +19,19 @@ For example:
       6t
 ```
 
-This can be written down as:
+Can be written down as:
+
 ```
 class MaterialConsumption
   include MdData
 
    table_data do
-     context "year == 1994, city == :buenos_aires" do
+     context "year == 1994 && city == :buenos_aires" do
        add "8t", "meterial == :coal"
        add "5t", "meterial == :potassium"
      end
 
-     context "year == 1995, city == :buenos_aires" do
+     context "year == 1995 && city == :buenos_aires" do
        add "8t", "meterial == :coal"
        add "5t", "meterial == :potassium"
      end
@@ -53,6 +54,11 @@ And then execute:
 Or install it yourself as:
 
     $ gem install md_data
+
+## Limitations
+
+* No nested context allowed(yet)
+* Tests for misformed data definition
 
 ## Contributing
 

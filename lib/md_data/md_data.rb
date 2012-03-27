@@ -12,23 +12,33 @@ module MdData
       @rules = []
       @current_context = nil
       load_rules
-      prepared = prepare(@rules, attributes)
-      pp prepared
-      prepared.select { |rule| eval(rule[1]) }.map { |evaluated| evaluated[0] }[0]
+      container = self.new
+      attributes.each do |key,value|
+        self.send(:define_method, key) do
+          value
+        end
+      end
+      self.send(:define_method, :select_from_rules) do |rules|
+        result = nil
+        rules.each do |rule|
+          begin 
+            rule_is_satisfied = eval(rule[1])
+            if rule_is_satisfied
+              result = rule[0]
+              break
+            end
+          rescue
+            #nasty, allows me not to define dimensions for now TODO: fix
+          end
+        end
+        result
+      end
+      container.select_from_rules(@rules)
     end
 
  private
     def load_rules
       @table_data_block.call
-    end
-
-    def prepare(rules, attributes)
-      attributes.each do |key, value|
-        rules.each do |rule| 
-          rule[1].gsub!(key.to_s,value.to_s) 
-        end
-      end
-      rules
     end
 
     def add(value, condition)
