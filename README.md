@@ -50,7 +50,6 @@ By defining dimensions you get helper methods that can be used in 'context' and 
 context 'year_1994 && buenos_aires'  do
   add '8t', 'coal'
 end
-
 ```
 
 eqauls
