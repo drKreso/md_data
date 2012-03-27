@@ -3,7 +3,8 @@ module MdData
     base.extend MdDataClassMethods
   end
 
-  module MdDataClassMethods
+  module MdDataClassMethods  
+
     def table_data(&block)
       @table_data_block = block
     end
@@ -20,9 +21,13 @@ module MdData
     end
 
     def dimension(name, allowed_values)
-      @dimensions ||= {}
-      @dimensions[name] = allowed_values
+      dimensions[name] = allowed_values
     end
+
+    def dimensions
+      @dimensions ||= {}
+    end
+    
 
     private
     def load_rules

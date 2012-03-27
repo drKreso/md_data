@@ -97,6 +97,17 @@ describe MdData do
 
   it 'is aware of dimensions' do
     class TestClass
+      dimension :year, [:year_1994, :year_1995]
+      dimension :time_of_day, [:morning, :evening]
+    end
+
+    TestClass.dimensions.should == {:year => [:year_1994, :year_1995],
+                                   :time_of_day => [:morning, :evening] }
+  end
+
+
+  it 'is creates helper methods for dimensions values' do
+    class TestClass
 
       dimension :year, [:year_1994, :year_1995]
       dimension :time_of_day, [:morning, :evening]
