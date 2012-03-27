@@ -13,30 +13,18 @@ module MdData
       @current_context = nil
       load_rules
       container = self.new
-      attributes.each do |key,value|
-        self.send(:define_method, key) do
-          value
-        end
-      end
-      self.send(:define_method, :select_from_rules) do |rules|
-        result = nil
-        rules.each do |rule|
-          begin 
-            rule_is_satisfied = eval(rule[1])
-            if rule_is_satisfied
-              result = rule[0]
-              break
-            end
-          rescue
-            #nasty, allows me not to define dimensions for now TODO: fix
-          end
-        end
-        result
-      end
+      define_helpers_methods(attributes)
+      define_dimension_values_methods
+      define_select_from_rules
       container.select_from_rules(@rules)
     end
 
- private
+    def dimension(name, allowed_values)
+      @dimensions ||= {}
+      @dimensions[name] = allowed_values
+    end
+
+    private
     def load_rules
       @table_data_block.call
     end
@@ -50,6 +38,40 @@ module MdData
       @current_context = condition
       block.call
     end
-    
+
+    def  define_helpers_methods(attributes)
+      attributes.each do |key,value|
+        self.send(:define_method, key) do
+          value
+        end
+      end
+    end
+
+    def define_dimension_values_methods
+      unless @dimensions.nil?
+        @dimensions.each do |name, values|
+          values.each do |value|
+            self.send(:define_method, value) do
+              eval "#{name} == :#{value}"
+            end
+          end
+        end
+      end
+    end
+
+    def define_select_from_rules
+      self.send(:define_method, :select_from_rules) do |rules|
+        result = nil
+        rules.each do |rule|
+          rule_is_satisfied = eval(rule[1])
+          if rule_is_satisfied
+            result = rule[0]
+            break
+          end
+        end
+        result
+      end
+    end
+
   end
 end

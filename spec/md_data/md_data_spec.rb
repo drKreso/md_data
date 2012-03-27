@@ -95,4 +95,24 @@ describe MdData do
     TestClass.select(:year => 1995, :time_of_day => :evening).should == "8t"
   end
 
+  it 'is aware of dimensions' do
+    class TestClass
+
+      dimension :year, [:year_1994, :year_1995]
+      dimension :time_of_day, [:morning, :evening]
+
+      table_data do
+        context "morning" do
+          add "18t", "year_1995" 
+          add "16t", "year_1994" 
+        end
+        context "evening" do
+          add "8t", "year_1995" 
+        end
+      end
+    end
+    TestClass.select(:year => :year_1995, :time_of_day => :morning).should == "18t"
+  end
+
+
 end

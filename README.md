@@ -25,21 +25,47 @@ Can be written down as:
 class MaterialConsumption
   include MdData
 
-   table_data do
-     context "year == 1994 && city == :buenos_aires" do
-       add "8t", "meterial == :coal"
-       add "5t", "meterial == :potassium"
-     end
+  dimension :year, [:year_1994, :year_1995]
+  dimension :city, [:buenos_aires, :zagreb]
+  dimension :material, [:coal, :potassium]
 
-     context "year == 1995 && city == :buenos_aires" do
-       add "8t", "meterial == :coal"
-       add "5t", "meterial == :potassium"
-     end
-   end
+  table_data do
+    context 'year_1994 && buenos_aires' do
+      add '8t', 'coal'
+      add '5t', 'potassium'
+    end
+    context 'year_1995 && buenos_aires' do
+      add '8t', 'coal'
+      add '5t', 'potassium'
+    end
+  end
 end
 
 MaterialConsumption.select(:year => 1994, :city => :buenos_aires, :material => :coal) #=> '8t'
 ```
+##Usage
+By defining dimensions you get helper methods that can be used in 'context' and 'add' conditionals.
+
+```
+context 'year_1994 && buenos_aires'  do
+  add '8t', 'coal'
+end
+
+```
+
+eqauls
+
+```
+context 'year == :year_1994 && city == :buenos_aires' do
+  add '8t', 'material == :coal'
+end
+```
+
+Important thing here is that this is still just Ruby in quotes. You can add any conditionals that you need
+while you still have basic scenario covered and simplified.
+
+##Usage
+For any type of ruled based queryingr, when you want to pull out specific data based on attributes and rules.
 
 ## Installation
 
@@ -59,6 +85,7 @@ Or install it yourself as:
 
 * No nested context allowed(yet)
 * Tests for misformed data definition
+* Support for same dimension instance value and resolving of ambiguity
 
 ## Contributing
 
