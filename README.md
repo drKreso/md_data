@@ -52,7 +52,7 @@ context 'year_1994 && buenos_aires'  do
 end
 ```
 
-eqauls
+Equals
 
 ```
 context 'year == :year_1994 && city == :buenos_aires' do
@@ -64,7 +64,7 @@ Important thing here is that this is still just Ruby in quotes. You can add any 
 while you still have basic scenario covered and simplified.
 
 ##Usage
-For any type of ruled based queryingr, when you want to pull out specific data based on attributes and rules.
+For any type of ruled based querying, when you want to pull out specific data based on attributes and rules.
 
 ## Installation
 
@@ -83,7 +83,7 @@ Or install it yourself as:
 ## Limitations
 
 * No nested context allowed(yet)
-* Tests for misformed data definition
+* Tests for mis formed data definition
 * Support for same dimension instance value and resolving of ambiguity
 
 ## Contributing
