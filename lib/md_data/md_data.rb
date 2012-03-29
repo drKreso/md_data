@@ -1,4 +1,8 @@
 module MdData
+
+  class NoRuleFound < StandardError
+  end
+
   def self.included(base)
     base.extend MdDataClassMethods
   end
@@ -9,11 +13,15 @@ module MdData
       @table_data_block = block
     end
 
-    def select(attributes)
+    def select(attributes, parent = nil)
       @rules = []
       @current_context = nil
       load_rules
-      container = self.new
+      if (parent.nil?)
+        container = self.new
+      else
+        container = self.new(parent)
+      end
       define_helpers_methods(attributes)
       define_dimension_values_methods
       define_select_from_rules
@@ -74,7 +82,7 @@ module MdData
             break
           end
         end
-        result.nil? ? raise('No rule is found') : result
+        result.nil? ? raise(NoRuleFound.new('No rule found')) : result
       end
     end
 

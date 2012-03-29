@@ -56,7 +56,7 @@ describe MdData do
   end
 
 
-  it 'rules can be created with add in context' do
+  it 'rules can be created with add in preconditio:' do
     class TestClass
       table_data do
         context "time_of_day == :morning" do
