@@ -130,10 +130,10 @@ describe MdData do
     class TestClassIsolated
       include MdData
       dimension :year, [:year_1994, :year_1995]
-      dimension :time_of_day, [:morning, :evening]
+      dimension :my_time_of_day, [:morning, :evening]
 
       table_data do
-        context "time_of_day == :evening" do
+        context "my_time_of_day == :evening" do
           add "8t", "year_1995" 
           add "7t", "year_1994" 
         end
@@ -150,8 +150,8 @@ describe MdData do
 
     TestClassIsolated.select({:year => :year_1995}).should == "16t"
     TestClassIsolated.select({:year => :year_1995}).should == "16t"
-    TestClassIsolated.select({:year => :year_1995, :time_of_day => :morning}).should == "8t"
-    TestClassIsolated.select({:year => :year_1994, :time_of_day => :evening}).should == "7t"
+    TestClassIsolated.select({:year => :year_1995, :my_time_of_day => :morning}).should == "8t"
+    TestClassIsolated.select({:year => :year_1994, :my_time_of_day => :evening}).should == "7t"
   end
 
 
@@ -159,10 +159,10 @@ describe MdData do
     class TestClassIsolated
       include MdData
       dimension :year, [:year_1994, :year_1995]
-      dimension :time_of_day, [:morning, :evening]
+      dimension :my_2_time_of_day, [:morning, :evening]
 
       table_data do
-        context "time_of_day == :evening" do
+        context "my_2_time_of_day == :evening" do
           add "8t", "year_1995" 
           add "7t", "year_1994" 
         end
@@ -187,8 +187,8 @@ describe MdData do
     t = Testing.new
     t.table.select({:year => :year_1995}).should == "16t"
     t.table.select({:year => :year_1995}).should == "16t"
-    t.table.select({:year => :year_1995, :time_of_day => :morning}).should == "8t"
-    t.table.select({:year => :year_1994, :time_of_day => :evening}).should == "7t"
+    t.table.select({:year => :year_1995, :my_2_time_of_day => :morning}).should == "8t"
+    t.table.select({:year => :year_1994, :my_2_time_of_day => :evening}).should == "7t"
   end
 
 end

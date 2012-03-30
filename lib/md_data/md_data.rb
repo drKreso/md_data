@@ -20,7 +20,7 @@ module MdData
         (instance_variable_get "@attributes")[key]
       end
     end
-    attributes.each do |key,value|
+     attributes.each do |key,value|
       Kernel.send(:define_method, key) do
         (instance_variable_get "@attributes")[key]
       end
