@@ -1,10 +1,25 @@
 module MdData
 
-  class NoRuleFound < StandardError
-  end
+  class NoRuleFound < StandardError ; end
 
   def self.included(base)
     base.extend MdDataClassMethods
+  end
+
+  def attributes
+    @attributes
+  end
+
+  def attributes=(value)
+    @attributes = value
+  end
+
+  def define_helpers_methods(attributes)
+    @attributes.each do |key,value|
+      Kernel.send(:define_method, key) do
+        (instance_variable_get "@attributes")[key]
+      end
+    end
   end
 
   module MdDataClassMethods  
@@ -22,7 +37,8 @@ module MdData
       else
         container = self.new(parent)
       end
-      define_helpers_methods(attributes)
+      container.attributes = attributes
+      container.define_helpers_methods(attributes)
       define_dimension_values_methods
       define_select_from_rules
       container.select_from_rules(@rules)
@@ -52,13 +68,6 @@ module MdData
       block.call
     end
 
-    def  define_helpers_methods(attributes)
-      attributes.each do |key,value|
-        self.send(:define_method, key) do
-          value
-        end
-      end
-    end
 
     def define_dimension_values_methods
       unless @dimensions.nil?
