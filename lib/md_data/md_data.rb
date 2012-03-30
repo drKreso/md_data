@@ -14,8 +14,13 @@ module MdData
     @attributes = value
   end
 
-  def define_helpers_methods(attributes)
-    @attributes.each do |key,value|
+  def define_helpers_methods(dimensions, attributes)
+    dimensions.each_key do |key|
+      Kernel.send(:define_method, key) do
+        (instance_variable_get "@attributes")[key]
+      end
+    end
+    attributes.each do |key,value|
       Kernel.send(:define_method, key) do
         (instance_variable_get "@attributes")[key]
       end
@@ -38,7 +43,7 @@ module MdData
         container = self.new(parent)
       end
       container.attributes = attributes
-      container.define_helpers_methods(attributes)
+      container.define_helpers_methods(dimensions, attributes)
       define_dimension_values_methods
       define_select_from_rules
       container.select_from_rules(@rules)
@@ -51,7 +56,6 @@ module MdData
     def dimensions
       @dimensions ||= {}
     end
-    
 
     private
     def load_rules

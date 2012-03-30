@@ -56,7 +56,7 @@ describe MdData do
   end
 
 
-  it 'rules can be created with add in preconditio:' do
+  it 'rules can be created with add in precondition' do
     class TestClass
       table_data do
         context "time_of_day == :morning" do
@@ -125,5 +125,70 @@ describe MdData do
     TestClass.select(:year => :year_1995, :time_of_day => :morning).should == "18t"
   end
 
+
+  it 'is shuld create helper methods for dimensions even if atttibute not sent' do
+    class TestClassIsolated
+      include MdData
+      dimension :year, [:year_1994, :year_1995]
+      dimension :time_of_day, [:morning, :evening]
+
+      table_data do
+        context "time_of_day == :evening" do
+          add "8t", "year_1995" 
+          add "7t", "year_1994" 
+        end
+        context "morning" do
+          add "8t", "year_1995" 
+          add "6t", "year_1994" 
+        end
+        context "true" do
+          add "16t", "year_1995" 
+        end
+      end
+
+    end
+
+    TestClassIsolated.select({:year => :year_1995}).should == "16t"
+    TestClassIsolated.select({:year => :year_1995}).should == "16t"
+    TestClassIsolated.select({:year => :year_1995, :time_of_day => :morning}).should == "8t"
+    TestClassIsolated.select({:year => :year_1994, :time_of_day => :evening}).should == "7t"
+  end
+
+
+  it 'is shuld create helper methods for dimensions even if atttibute not sent and using delegator' do
+    class TestClassIsolated
+      include MdData
+      dimension :year, [:year_1994, :year_1995]
+      dimension :time_of_day, [:morning, :evening]
+
+      table_data do
+        context "time_of_day == :evening" do
+          add "8t", "year_1995" 
+          add "7t", "year_1994" 
+        end
+        context "morning" do
+          add "8t", "year_1995" 
+          add "6t", "year_1994" 
+        end
+        context "true" do
+          add "16t", "year_1995" 
+        end
+      end
+
+    end
+
+    class Testing
+      attr_reader :table
+      def initialize
+        @table = TestClassIsolated
+      end
+    end
+
+    t = Testing.new
+    t.table.select({:year => :year_1995}).should == "16t"
+    t.table.select({:year => :year_1995}).should == "16t"
+    t.table.select({:year => :year_1995, :time_of_day => :morning}).should == "8t"
+    t.table.select({:year => :year_1994, :time_of_day => :evening}).should == "7t"
+  end
 
 end
