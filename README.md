@@ -5,15 +5,15 @@ An easy notation for describing multidimensional data.
 For example:
 
 ```
-1994      
+1994
   BuenosAires
     Coal
       19t
     Potassium
       5t
-1995 
+1995
   BuenosAires
-    Coal  
+    Coal
       8t
     Potassium
       6t

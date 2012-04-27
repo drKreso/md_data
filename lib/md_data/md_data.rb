@@ -1,5 +1,5 @@
 module MdData
-
+  #raise this if you cant find appropriate rule
   class NoRuleFound < StandardError ; end
 
   def self.included(base)
@@ -15,20 +15,16 @@ module MdData
   end
 
   def define_helpers_methods(dimensions, attributes)
-    dimensions.each_key do |key|
-      Kernel.send(:define_method, key) do
-        (instance_variable_get "@attributes")[key]
-      end
-    end
-     attributes.each do |key,value|
-      Kernel.send(:define_method, key) do
-        (instance_variable_get "@attributes")[key]
-      end
-    end
+    dimensions.merge(attributes).each_key { |key| define_helper(key) }
   end
 
-  module MdDataClassMethods  
-
+  def define_helper(key)
+    Kernel.send(:define_method, key) do
+      (instance_variable_get "@attributes")[key]
+    end
+  end
+  
+  module MdDataClassMethods
     def table_data(&block)
       @table_data_block = block
     end
@@ -63,7 +59,11 @@ module MdData
     end
 
     def add(value, condition)
-      context_condition = @current_context.nil? ? '' : " && #{@current_context} "
+      if @current_context.nil?
+        context_condition = ''
+      else
+        context_condition = " && #{@current_context} "
+      end
       @rules << ( [value , (condition + context_condition)] )
     end
 
@@ -76,12 +76,14 @@ module MdData
     def define_dimension_values_methods
       unless @dimensions.nil?
         @dimensions.each do |name, values|
-          values.each do |value|
-            self.send(:define_method, value) do
-              eval "#{name} == :#{value}"
-            end
-          end
+          values.each { |value| equal?(name, value) }
         end
+      end
+    end
+
+    def equal?(name, value)
+      self.send(:define_method, value) do
+        instance_eval "#{name} == :#{value}"
       end
     end
 
@@ -89,7 +91,7 @@ module MdData
       self.send(:define_method, :select_from_rules) do |rules|
         result = nil
         rules.each do |rule|
-          rule_is_satisfied = eval(rule[1])
+          rule_is_satisfied = instance_eval(rule[1])
           if rule_is_satisfied
             result = rule[0]
             break
@@ -98,6 +100,5 @@ module MdData
         result.nil? ? raise(NoRuleFound.new('No rule found')) : result
       end
     end
-
-  end
-end
+  end #MdDataClassMethods
+end #MdData
